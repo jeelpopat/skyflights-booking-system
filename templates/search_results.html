@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Results - Skyflights</title>
+    <link rel="stylesheet" href="/static/search.css">
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/grid.css">
+    <style>
+        body {
+            background-image: linear-gradient(to bottom right, #003f50, skyblue);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            width: 100%;
+            display: flex;
+            gap: 25px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar-filters {
+            width: 280px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            height: fit-content;
+        }
+        .sidebar-filters h3 { margin-top: 0; color: #003f50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group h4 { margin: 0 0 10px 0; color: #333; font-size: 16px; }
+        .filter-group label { display: block; color: #555; margin-bottom: 8px; font-size: 14px; cursor: pointer; }
+        .filter-group input[type="checkbox"] { margin-right: 8px; }
+
+        .results-container {
+            flex: 1;
+        }
+        .results-header {
+            color: white;
+            margin-bottom: 25px;
+            background: rgba(0, 63, 80, 0.8);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .results-header h2 { margin: 0; font-size: 24px; }
+        .results-header p { margin: 5px 0 0 0; font-size: 16px; opacity: 0.9; }
+
+        .flight-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-left: 8px solid #003f50;
+            transition: transform 0.2s;
+        }
+        .flight-card:hover { transform: translateY(-3px); }
+        .flight-info { width: 25%; }
+        .flight-info h3 { margin: 0 0 8px 0; color: #003f50; font-size: 20px; }
+        .flight-info p { margin: 4px 0; color: #666; font-size: 14px; }
+        
+        .route-details { text-align: center; flex: 1; padding: 0 20px; }
+        .time-row { font-weight: bold; font-size: 20px; color: #222; margin-bottom: 8px; }
+        .duration-row { color: #007bff; font-size: 14px; margin-bottom: 8px; }
+        .stops-route { font-size: 13px; color: #555; background: #f8f9fa; padding: 6px 10px; border-radius: 20px; display: inline-block; }
+        .stops-route i { color: #888; margin: 0 4px; font-size: 10px; }
+
+        .price-section { text-align: right; width: 25%; border-left: 1px dashed #ccc; padding-left: 20px; }
+        .price-tag { font-size: 26px; color: #28a745; font-weight: bold; display: block; }
+        .book-btn { display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; width: 100%; box-sizing: border-box; text-align: center; }
+        .book-btn:hover { background-color: #003f50; }
+        
+        .no-results { background: white; padding: 40px; text-align: center; border-radius: 10px; color: #003f50; width: 100%; }
+        .top-controls { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    
+    <div class="header">
+        <div class="container">
+            <div class="rows">
+                <div class="col-3">
+                    <div class="logo">
+                        <img src="/static/images/images.png" alt="Logo">
+                        <span>Skyflights</span>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="menu">
+                        <ul>
+                            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="search.html"><i class="fa fa-search"></i> Search</a></li>
+                            {% if session.get('logged_in') %}
+                                <li><a href="/my_bookings"><i class="fa fa-list"></i> My Bookings</a></li>
+                            {% endif %}
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact us</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About us</a></li>
+                            {% if session.get('logged_in') %}
+                                <li class="user-profile">
+                                    <a href="#"><i class="fa fa-user-circle"></i> {{ session['username'] }}</a>
+                                    <div class="profile-dropdown">
+                                        <p><strong>Email:</strong> {{ session['email'] }}</p>
+                                        <hr>
+                                        <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="sidebar-filters">
+    <h3><i class="fa fa-filter"></i> Filter Results</h3>
+    
+    <div class="filter-group">
+        <h4>Stops</h4>
+        <label><input type="checkbox" class="filter-stop" value="0"> Non-Stop</label>
+        <label><input type="checkbox" class="filter-stop" value="1"> 1 Stop</label>
+        <label><input type="checkbox" class="filter-stop" value="2"> 2+ Stops</label>
+    </div>
+
+    <div class="filter-group">
+        <h4>Departure Time</h4>
+        <label><input type="checkbox" class="filter-time" value="morning"> Morning (06:00 - 12:00)</label>
+        <label><input type="checkbox" class="filter-time" value="afternoon"> Afternoon (12:00 - 18:00)</label>
+        <label><input type="checkbox" class="filter-time" value="evening"> Evening (18:00 - 00:00)</label>
+        <label><input type="checkbox" class="filter-time" value="night"> Night (00:00 - 06:00)</label>
+    </div>
+
+    <div class="filter-group">
+        <h4>Airlines</h4>
+        {% for code in unique_airlines %}
+            <label>
+                <input type="checkbox" class="filter-airline" value="{{ code }}"> 
+                {{ carriers.get(code, code) }}
+            </label>
+        {% endfor %}
+    </div>
+
+    <div class="filter-group">
+        <h4>Max Price: <span id="price-display">₹ {{ max_price }}</span></h4>
+        <input type="range" id="filter-price" min="{{ min_price }}" max="{{ max_price }}" value="{{ max_price }}" step="1" style="width: 100%;">
+    </div>
+</div>
+
+        <div class="results-container">
+            {% if flights %}
+                {% set travel_date = flights[0].itineraries[0].segments[0].departure.at.split('T')[0] %}
+                <div class="results-header">
+                    <h2>{{ from_city }} <i class="fa fa-plane" style="margin: 0 10px;"></i> {{ to_city }}</h2>
+                    <p><i class="fa fa-calendar"></i> Date of Travel: <strong>{{ travel_date }}</strong></p>
+                </div>
+
+                <div class="top-controls">
+                    <div>
+                        <label style="color: white; font-weight: bold; margin-right: 10px;">Currency: </label>
+                        <select id="currency-selector" onchange="convertCurrency()" style="padding: 8px 12px; border-radius: 5px; font-weight: bold; border: none; outline: none;">
+                            <option value="1">INR (₹)</option>
+                            <option value="0.012">USD ($)</option>
+                            <option value="0.011">EUR (€)</option>
+                            <option value="0.016">CAD (C$)</option>
+                        </select>
+                    </div>
+                </div>
+
+                {% for flight in flights %}
+                {% set first_seg = flight.itineraries[0].segments[0] %}
+                {% set last_seg = flight.itineraries[0].segments | last %}
+                {% set stop_count = flight.itineraries[0].segments | length - 1 %}
+                
+                <div class="flight-card" data-stops="{{ stop_count }}" data-time="{{ first_seg.departure.at.split('T')[1][:2] }}" data-airline="{{ first_seg.carrierCode }}" data-price="{{ flight.price.total }}">
+                    <div class="flight-info">
+                        <h3>{{ carriers.get(first_seg.carrierCode, first_seg.carrierCode) }}</h3>
+                        <p><i class="fa fa-tag"></i> Flight: {{ first_seg.carrierCode }}-{{ first_seg.number }}</p>
+                        <p><i class="fa fa-cog"></i> Aircraft: {{ first_seg.aircraft.code }}</p>
+                    </div>
+                    
+                    <div class="route-details">
+                        <div class="time-row">
+                            <span class="ist-time-dep" data-time="{{ first_seg.departure.at }}">--:--</span>
+                            <i class="fa fa-long-arrow-right" style="color: #ccc; margin: 0 10px;"></i>
+    
+                            <span class="ist-time-arr" data-dep-time="{{ first_seg.departure.at }}" data-duration="{{ flight.itineraries[0].duration }}">--:--</span> 
+                            <span style="font-size: 12px; color: #888;">(IST)</span>
+                        </div>
+                        
+                        <div class="duration-row">
+                            <i class="fa fa-clock-o"></i> Total Duration: {{ flight.itineraries[0].duration[2:] }}
+                        </div>
+
+                        <div class="stops-route">
+                            {% if stop_count == 0 %}
+                                <span style="color: #28a745; font-weight: bold;">Non-Stop</span> | {{ first_seg.departure.iataCode }} <i class="fa fa-long-arrow-right"></i> {{ last_seg.arrival.iataCode }}
+                            {% else %}
+                                <span style="color: #dc3545; font-weight: bold;">{{ stop_count }} Stop(s)</span> | 
+                                {% for seg in flight.itineraries[0].segments %}
+                                    {{ seg.departure.iataCode }} <i class="fa fa-chevron-right"></i> 
+                                    {% if loop.last %}
+                                        {{ seg.arrival.iataCode }}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        {% if is_round_trip %}
+    {% set ret_first_seg = flight.itineraries[1].segments[0] %}
+    {% set ret_last_seg = flight.itineraries[1].segments | last %}
+    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #ccc;">
+        <span style="font-size: 13px; color: #003f50; font-weight: bold;">
+            <i class="fa fa-undo"></i> Return Leg: 
+        </span>
+        <span style="font-size: 13px; color: #555;">
+            {{ ret_first_seg.departure.iataCode }} <i class="fa fa-long-arrow-right"></i> {{ ret_last_seg.arrival.iataCode }}
+            (Departs: {{ ret_first_seg.departure.at.split('T')[0] }})
+        </span>
+    </div>
+{% endif %}
+                    </div>
+
+                    <div class="price-section">
+                        <span class="price-tag" data-base-price="{{ flight.price.total }}">
+                            ₹ <span class="amount">{{ flight.price.total }}</span>
+                        </span>
+                        
+                        {% set is_round_trip = flight.itineraries | length > 1 %}
+                        {% set ret_date = flight.itineraries[1].segments[0].departure.at.split('T')[0] if is_round_trip else '' %}
+                        {% set t_type = 'round-trip' if is_round_trip else 'one-way' %}
+
+                        <a href="/book.html?from={{ first_seg.departure.iataCode }}&to={{ last_seg.arrival.iataCode }}&date={{ first_seg.departure.at.split('T')[0] }}&price={{ flight.price.total }}&flight={{ first_seg.carrierCode }}{{ first_seg.number }}&airline={{ carriers.get(first_seg.carrierCode, first_seg.carrierCode) }}&stops={{ stop_count }}&trip_type={{ t_type }}&return_date={{ ret_date }}" 
+                           class="book-btn" 
+                           data-base-url="/book.html?from={{ first_seg.departure.iataCode }}&to={{ last_seg.arrival.iataCode }}&date={{ first_seg.departure.at.split('T')[0] }}&flight={{ first_seg.carrierCode }}{{ first_seg.number }}&airline={{ carriers.get(first_seg.carrierCode, first_seg.carrierCode) }}&stops={{ stop_count }}&trip_type={{ t_type }}&return_date={{ ret_date }}" 
+                           data-base-price="{{ flight.price.total }}">
+                            Select Flight
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                <div class="results-header">
+                    <h2>{{ from_city }} <i class="fa fa-long-arrow-right" style="margin: 0 10px;"></i> {{ to_city }}</h2>
+                </div>
+                <div class="no-results">
+                    <i class="fa fa-plane" style="font-size: 50px; color: #ccc; margin-bottom: 20px;"></i>
+                    <h3>No Flights Found</h3>
+                    <p>We couldn't find any flights for this route on the selected date. Ensure you are using correct 3-letter IATA codes (e.g., JFK, LHR, DEL).</p>
+                    <a href="search.html" style="color: #007bff; font-weight: bold; text-decoration: none;">&larr; Modify Search</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+<div class="footer">
+      <div class="container">
+          <div class="inner-footer">
+              <div class="rows">
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>About us</h2><br>
+                          <p>skyflight is most trusted flight booking agency, offering affordable fares and hassle-free travel services.</p>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Quick Links</h2><br>
+                          <div class="menuf">
+                              <ul>
+                                  <li><a href="/">Home</a></li>
+                                  <li><a href="book.html">Book Now</a></li>
+                                  <li><a href="search.html">Search</a></li>
+                                  <li><a href="contact.html">Contact us</a></li>
+                                  <li><a href="about.html">About us</a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Services</h2><br>
+                          <ul class="serv">
+                              <li>24/7 Customer Support</li>
+                              <li>Easy Online Booking</li>
+                              <li>Secure Payment Options</li>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Contact us</h2>
+                          <div class="detail">
+                              <ul class="data"><br>
+                                  <li><i class="fa fa-map-marker"></i> GANDHINAGAR</li>
+                                  <li><i class="fa fa-phone"></i> 9870088118</li>
+                                  <li><i class="fa fa-envelope"></i> janral2204@gmail.com</li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="footer-border"></div>
+          <div class="footer-end">
+              <div class="left-end">
+                  <p>Copyright 2026 - All rights reserved by <span>skyflight</span></p>
+              </div>
+              <div class="right-end">
+                  <div class="social-icons">
+                      <a href="#" class="facebook"></a>
+                      <a href="#" class="twitter"></a>
+                  </div>
+              </div>
+          </div>
+
+          <br>
+          <h2>Find Us Here</h2>
+          <div class="footer-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.5652194823347!2d72.63099969999999!3d23.0763962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e814e9704ec85%3A0x90dd00e5a99ba47a!2sSardar%20Vallabhbhai%20Patel%20International%20Airport!5e0!3m2!1sen!2sin!4v1776366096335!5m2!1sen!2sin" width="100%" height="340px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+      </div>
+   </div>
+</body>
+</html>
+
+    <script>
+        function convertCurrency() {
+            const selector = document.getElementById('currency-selector');
+            if(!selector) return;
+            const rate = parseFloat(selector.value);
+            
+            const currencyCode = selector.options[selector.selectedIndex].text.split(' ')[0]; 
+            const currencySymbol = selector.options[selector.selectedIndex].text.match(/\((.*?)\)/)[1];
+            
+            document.querySelectorAll('.price-tag').forEach(el => {
+                const basePrice = parseFloat(el.getAttribute('data-base-price'));
+                const newPrice = (basePrice * rate).toFixed(2);
+                el.innerHTML = `${currencySymbol} <span class="amount">${newPrice}</span>`;
+            });
+
+            document.querySelectorAll('.book-btn').forEach(btn => {
+                const baseUrl = btn.getAttribute('data-base-url');
+                const basePrice = parseFloat(btn.getAttribute('data-base-price'));
+                const newPrice = (basePrice * rate).toFixed(2);
+                btn.href = `${baseUrl}&price=${newPrice}&currency=${currencyCode}`;
+            });
+        }
+
+function calculateISTTimes() {
+    function parseDuration(duration) {
+        const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?/);
+        const hours = parseInt(match[1]) || 0;
+        const minutes = parseInt(match[2]) || 0;
+        return { hours, minutes };
+    }
+
+    document.querySelectorAll('.ist-time-dep').forEach(el => {
+        let rawTime = el.getAttribute('data-time'); 
+        let depDate = new Date(rawTime);
+        
+        el.innerText = depDate.toLocaleTimeString('en-IN', {
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true
+        });
+    });
+
+    document.querySelectorAll('.ist-time-arr').forEach(el => {
+        let rawDepTime = el.getAttribute('data-dep-time');
+        let durationStr = el.getAttribute('data-duration'); 
+        
+        let depDate = new Date(rawDepTime);
+        let dur = parseDuration(durationStr);
+        
+        depDate.setHours(depDate.getHours() + dur.hours);
+        depDate.setMinutes(depDate.getMinutes() + dur.minutes);
+        
+        el.innerText = depDate.toLocaleTimeString('en-IN', {
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true
+        });
+    });
+}
+
+window.onload = function() {
+    convertCurrency();
+    calculateISTTimes(); 
+};
+
+function applyFilters() {
+    const checkedStops = Array.from(document.querySelectorAll('.filter-stop:checked')).map(cb => parseInt(cb.value));
+    const checkedTimes = Array.from(document.querySelectorAll('.filter-time:checked')).map(cb => cb.value);
+    const checkedAirlines = Array.from(document.querySelectorAll('.filter-airline:checked')).map(cb => cb.value);
+    const maxPrice = parseFloat(document.getElementById('filter-price').value);
+
+
+    document.getElementById('price-display').innerText = '₹ ' + maxPrice;
+
+    document.querySelectorAll('.flight-card').forEach(card => {
+        let cardStops = parseInt(card.getAttribute('data-stops'));
+        if (cardStops >= 2) cardStops = 2; 
+        
+        let cardHour = parseInt(card.getAttribute('data-time'));
+        let cardTimeCategory = '';
+        if (cardHour >= 6 && cardHour < 12) cardTimeCategory = 'morning';
+        else if (cardHour >= 12 && cardHour < 18) cardTimeCategory = 'afternoon';
+        else if (cardHour >= 18 && cardHour <= 23) cardTimeCategory = 'evening';
+        else cardTimeCategory = 'night';
+
+        let cardAirline = card.getAttribute('data-airline');
+        let cardPrice = parseFloat(card.getAttribute('data-price'));
+
+        let showStops = checkedStops.length === 0 || checkedStops.includes(cardStops);
+        let showTime = checkedTimes.length === 0 || checkedTimes.includes(cardTimeCategory);
+        let showAirline = checkedAirlines.length === 0 || checkedAirlines.includes(cardAirline);
+        let showPrice = cardPrice <= maxPrice;
+
+        if (showStops && showTime && showAirline && showPrice) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+document.querySelectorAll('.filter-stop, .filter-time, .filter-airline').forEach(cb => {
+    cb.addEventListener('change', applyFilters);
+});
+document.getElementById('filter-price').addEventListener('input', applyFilters);
+
+    </script>
+</body>
+</html>

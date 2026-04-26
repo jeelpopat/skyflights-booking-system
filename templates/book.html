@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Now - Skyflights</title>
+    
+    <link rel="stylesheet" href="/static/book.css">
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/grid.css">
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="rows">
+                <div class="col-3">
+                    <div class="logo">
+                        <img src="/static/images/images.png" alt="Skyflights Logo">
+                        <span>Skyflights</span>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="menu">
+                        <ul>
+                            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="search.html"><i class="fa fa-search"></i> Search</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li><a href="/my_bookings"><i class="fa fa-list"></i> My Bookings</a></li>
+                            {% endif %}
+                            
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact us</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About us</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li class="user-profile">
+                                    <a href="#"><i class="fa fa-user-circle"></i> {{ session['username'] }}</a>
+                                    <div class="profile-dropdown">
+                                        <p><strong>Email:</strong> {{ session['email'] }}</p>
+                                        <hr>
+                                        <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-background">
+        <h2 class="form-title">Book Your Flight</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages" style="margin-bottom: 20px;">
+              {% for category, message in messages %}
+                <div style="padding: 10px; border-radius: 5px; text-align: center; font-weight: bold;
+                     {% if category == 'error' %} background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; 
+                     {% elif category == 'success' %} background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; {% endif %}">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form id="bookingForm" action="/book_flight" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="base_price" value="{{ price }}">
+            <input type="hidden" name="flight_number" value="{{ flight_number }}">
+            <input type="hidden" name="currency" value="{{ currency }}">
+            <input type="hidden" name="airline" value="{{ airline }}">
+            
+            <div class="section-title"><i class="fa fa-plane"></i> Flight Details - <strong>{{ airline }}</strong></div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="trip_type">Trip Type</label>
+                    <select name="trip_type" id="trip_type" onchange="toggleReturnDate()">
+                        <option value="one-way" {% if trip_type == 'one-way' %}selected{% endif %}>One-way</option>
+                        <option value="round-trip" {% if trip_type == 'round-trip' %}selected{% endif %}>Round-trip</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="stops">Stops/Layovers</label>
+                    <select name="stops" id="stops">
+                        <option value="non-stop" {% if stops == '0' %}selected{% endif %}>Non-stop</option>
+                        <option value="1-stop" {% if stops == '1' %}selected{% endif %}>1 Stop</option>
+                        <option value="2-stop" {% if stops|int > 1 %}selected{% endif %}>2+ Stops</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>From</label>
+                    <input type="text" name="from_country" value="{{ from_city }}" readonly required>
+                </div>
+                <div class="form-group">
+                    <label>To</label>
+                    <input type="text" name="to_country" value="{{ to_city }}" readonly required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Departure Date</label>
+                    <input type="date" name="date_of_journey" value="{{ date }}" readonly required>
+                </div>
+                <div class="form-group" id="return-date-group" style="display: {% if trip_type == 'round-trip' %}block{% else %}none{% endif %};">
+                    <label>Return Date</label>
+                    <input type="date" name="return_date" value="{{ return_date }}" {% if trip_type == 'round-trip' %}readonly{% endif %}>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fa fa-users"></i> Passenger Details</div>
+            
+            <div id="passengers-container">
+                <div class="passenger-card" id="passenger-1">
+                    <div class="passenger-header">
+                        <span>Passenger 1 (Primary)</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="p_name[]" placeholder="As per passport" pattern="[A-Za-z ]{2,}" title="Only letters and spaces allowed (minimum 2 characters)" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Passport Number</label>
+                            <input type="text" name="p_passport[]" placeholder="Passport No." pattern="[A-Za-z0-9]{6,9}" minlength="6" maxlength="9" title="Passport must be 6 to 9 letters and numbers" style="text-transform: uppercase;" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number" name="p_age[]" placeholder="e.g. 25" min="0" max="120" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="p_gender[]">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn-add" onclick="addPassenger()">
+                <i class="fa fa-plus-circle"></i> Add Passenger
+            </button>
+
+            <div class="form-group" style="margin-top: 15px;">
+                <label for="contact_email">Contact Email (for Ticket)</label>
+                <input type="email" id="contact_email" name="contact_email" value="{{ session.get('email', '') }}" placeholder="email@example.com" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Confirm Booking</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <div class="inner-footer">
+                <div class="rows">
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>About us</h2><br>
+                            <p>Skyflight is the most trusted flight booking agency, offering affordable fares and hassle-free travel services.</p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Quick Links</h2><br>
+                            <div class="menuf">
+                                <ul>
+                                    <li><a href="/">Home</a></li>
+                                    <li><a href="book.html">Book Now</a></li>
+                                    <li><a href="search.html">Search</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="about.html">About us</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Services</h2><br>
+                            <ul class="serv">
+                                <li>24/7 Customer Support</li>
+                                <li>Easy Online Booking</li>
+                                <li>Secure Payment Options</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Contact us</h2>
+                            <div class="detail">
+                                <ul class="data">
+                                    <li><a href="#"><i class="fa fa-map-marker"></i> GANDHINAGAR</a></li>
+                                    <li><a href="#"><i class="fa fa-phone"></i> 9870088118</a></li>
+                                    <li><a href="mailto:janral2204@gmail.com"><i class="fa fa-envelope"></i> janral2204@gmail.com</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-border"></div>
+            <div class="footer-end">
+                <div class="left-end">
+                    <p>Copyright 2026 - All rights reserved by <span>Skyflight</span></p>
+                </div>
+                <div class="right-end">
+                    <div class="social-icons">
+                        <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+                        <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h2>Find Us Here</h2>
+            <div class="footer-map">
+                <iframe src="https://maps.google.com/maps?q=Gandhinagar&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="340px" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let passengerCount = 1;
+
+        function toggleReturnDate() {
+            const type = document.getElementById('trip_type').value;
+            const returnGroup = document.getElementById('return-date-group');
+            returnGroup.style.display = (type === 'round-trip') ? 'block' : 'none';
+        }
+
+        function addPassenger() {
+            passengerCount++;
+            const container = document.getElementById('passengers-container');
+            
+            const div = document.createElement('div');
+            div.className = 'passenger-card';
+            div.id = 'passenger-' + passengerCount;
+            
+            div.innerHTML = `
+                <div class="passenger-header">
+                    <span>Passenger ${passengerCount}</span>
+                    <button type="button" class="btn-remove" onclick="removePassenger(${passengerCount})">Remove</button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="p_name[]" placeholder="As per passport" 
+                               pattern="[A-Za-z ]{2,}" title="Only letters and spaces allowed (minimum 2 characters)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Passport Number</label>
+                        <input type="text" name="p_passport[]" placeholder="Passport No." 
+                               pattern="[A-Za-z0-9]{6,9}" minlength="6" maxlength="9" title="Passport must be 6 to 9 letters and numbers" 
+                               style="text-transform: uppercase;" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" name="p_age[]" placeholder="e.g. 25" min="0" max="120" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <select name="p_gender[]">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
+        function removePassenger(id) {
+            const div = document.getElementById('passenger-' + id);
+            if (div) div.remove();
+        }
+    </script>
+</body>
+</html>

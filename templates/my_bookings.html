@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Skyflights</title>
+    <link rel="stylesheet" href="/static/book.css"> 
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="/static/grid.css">
+    <style>
+        .bookings-container {
+            max-width: 1000px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .booking-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .booking-table th, .booking-table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        .booking-table th { background-color: #003f50; color: white; }
+        .status-badge { background: #28a745; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+        .status-pending { background: #ffc107; color: black; padding: 5px 10px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="rows">
+                <div class="col-3">
+                    <div class="logo">
+                        <img src="/static/images/images.png" alt="">
+                        <span>skyflights</span>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="menu">
+                        <ul>
+                            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="search.html"><i class="fa fa-search"></i> Search</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li><a href="/my_bookings"><i class="fa fa-list"></i> My Bookings</a></li>
+                            {% endif %}
+                            
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact us</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About us</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li class="user-profile">
+                                    <a href="#"><i class="fa fa-user-circle"></i> {{ session['username'] }}</a>
+                                    <div class="profile-dropdown">
+                                        <p><strong>Email:</strong> {{ session['email'] }}</p>
+                                        <hr>
+                                        <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bookings-container">
+        <h2 style="color: #003f50; text-align: center;"><i class="fa fa-plane"></i> My Travel History</h2>
+        
+        {% if bookings %}
+            <table class="booking-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Route</th>
+                        <th>Date</th>
+                        <th>Passengers</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td><strong>SKF-{{ b.id + 1000 }}</strong></td>
+                        <td>{{ b.from_country }} to {{ b.to_country }}</td>
+                        <td>{{ b.date_of_journey }}</td>
+                        <td>{{ b.passengers }}</td>
+                        <td>
+                            {% if b.status == 'Confirmed' %}
+                                <span class="status-badge">Confirmed</span>
+                            {% else %}
+                                <span class="status-pending">Pending Payment</span>
+                            {% endif %}
+                        </td>
+                        <td style="display: flex; gap: 10px;">
+                            {% if b.status == 'Confirmed' %}
+                                <a href="{{ url_for('download_ticket', booking_id=b.id) }}" style="background: #17a2b8; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px;"><i class="fa fa-download"></i> PDF</a>
+                            {% else %}
+                                <a href="{{ url_for('mock_checkout', booking_id=b.id) }}" style="background: #007bff; color: white; text-decoration: none; padding: 5px 10px; border-radius: 4px;"><i class="fa fa-credit-card"></i> Pay</a>
+                            {% endif %}
+
+                            <form action="{{ url_for('cancel_booking', booking_id=b.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                                    <i class="fa fa-trash"></i> Cancel
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div style="text-align: center; padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 25px;">
+                <p style="margin: 0; font-size: 18px; color: #333;">
+                    <i class="fa fa-info-circle" style="color: #007bff;"></i> You haven't booked any flights yet.
+                </p>
+                <a href="search.html" style="text-decoration:none; background:#007bff; color:white; padding:12px 25px; border-radius:5px; font-weight: bold; display: inline-block; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    Search for Flights
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+      <div class="container">
+          <div class="inner-footer">
+              <div class="rows">
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>About us</h2><br>
+                          <p>skyflight is most trusted flight booking agency, offering affordable fares and hassle-free travel services.</p>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Quick Links</h2><br>
+                          <div class="menuf">
+                              <ul>
+                                  <li><a href="/">Home</a></li>
+                                  <li><a href="book.html">Book Now</a></li>
+                                  <li><a href="search.html">Search</a></li>
+                                  <li><a href="contact.html">Contact us</a></li>
+                                  <li><a href="about.html">About us</a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Services</h2><br>
+                          <ul class="serv">
+                              <li>24/7 Customer Support</li>
+                              <li>Easy Online Booking</li>
+                              <li>Secure Payment Options</li>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Contact us</h2>
+                          <div class="detail">
+                              <ul class="data"><br>
+                                  <li><i class="fa fa-map-marker"></i> GANDHINAGAR</li>
+                                  <li><i class="fa fa-phone"></i> 9870088118</li>
+                                  <li><i class="fa fa-envelope"></i> janral2204@gmail.com</li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="footer-border"></div>
+          <div class="footer-end">
+              <div class="left-end">
+                  <p>Copyright 2026 - All rights reserved by <span>skyflight</span></p>
+              </div>
+              <div class="right-end">
+                  <div class="social-icons">
+                      <a href="#" class="facebook"></a>
+                      <a href="#" class="twitter"></a>
+                  </div>
+              </div>
+          </div>
+
+          <br>
+          <h2>Find Us Here</h2>
+          <div class="footer-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.5652194823347!2d72.63099969999999!3d23.0763962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e814e9704ec85%3A0x90dd00e5a99ba47a!2sSardar%20Vallabhbhai%20Patel%20International%20Airport!5e0!3m2!1sen!2sin!4v1776366096335!5m2!1sen!2sin" width="100%" height="340px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+      </div>
+   </div>
+</body>
+</html>

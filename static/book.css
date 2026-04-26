@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-image: linear-gradient(to bottom right, #003f50, skyblue);
+    min-height: 100vh;
+}
+
+.header { height: 100px; width: 100%; background-color: #003f50; }
+.logo { margin-top: 25px; }
+.logo img { width: 70px; height: 45px; vertical-align: middle; }
+.logo span { color: white; vertical-align: middle; font-size: 24px; font-weight: bold; font-family: 'poppins', sans-serif; }
+.menu { margin-top: 30px; margin-left: 25px; }
+.menu ul li { display: inline-block; list-style: none; margin-left: 15px; }
+.menu ul li a { text-decoration: none; color: white; font-weight: bold; font-family: 'poppins', sans-serif; font-size: 18px; padding: 10px 6px; display: block; }
+.menu ul li:hover { background-color: white; border-radius: 5px; }
+.menu ul li:hover a { color: #003f50; }
+
+.user-profile {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%; 
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    padding: 15px;
+    z-index: 1000;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.user-profile:hover .profile-dropdown {
+    display: block;
+}
+
+.profile-dropdown p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.profile-dropdown .logout-btn {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+.form-background { 
+    max-width: 800px; 
+    margin: 40px auto; 
+    padding: 30px; 
+    background-color: rgba(255, 255, 255, 0.95); 
+    border-radius: 12px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+}
+.form-title { text-align: center; color: #003f50; margin-bottom: 25px; font-size: 30px; }
+.section-title { font-size: 18px; color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; margin-bottom: 15px; font-weight: bold; }
+
+.form-row { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+.form-group { flex: 1; min-width: 200px; }
+.form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px; }
+.form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; box-sizing: border-box; }
+
+.passenger-card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #007bff; position: relative; }
+.passenger-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; color: #007bff; }
+
+.btn-add { background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; }
+.btn-add:hover { background: #218838; }
+
+.btn-remove { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+.btn-remove:hover { background-color: #c82333; }
+
+.submit-btn { width: 100%; padding: 15px; background: #003f50; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; }
+.submit-btn:hover { background: #007bff; }
+
+.footer { margin-top: 40px; width: 100%; padding-top: 40px; padding-bottom: 20px; background-color: rgb(26, 24, 24); }
+.A1 h2 { color: white; }
+.A1 p { color: grey; font-size: 16px; line-height: 25px; }
+.menuf ul li { list-style: none; }
+.menuf ul li a { color: #007bff; text-decoration: none; }
+.serv li { line-height: 25px; color: grey; }
+.detail ul li { list-style: none; line-height: 25px; }
+.detail ul li a { text-decoration: none; color: grey; }
+.footer-border { margin-top: 25px; border-top: 1px dashed grey; }
+.footer-end { margin-top: 20px; text-align: center; color: grey; }
+.left-end span { color: #007bff; }

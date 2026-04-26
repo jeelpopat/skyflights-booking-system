@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - SkyFlights</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; font-family: 'Arial', sans-serif; }
+        .container { width: 90%; max-width: 450px; padding: 40px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); text-align: center; }
+        .icon { font-size: 60px; margin-bottom: 20px; }
+        .success-icon { color: #28a745; }
+        .error-icon { color: #dc3545; }
+        h1 { color: #333; font-size: 26px; margin-bottom: 10px; }
+        p { color: #666; font-size: 16px; margin-bottom: 25px; line-height: 1.5; }
+        .btn { display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s; }
+        .btn:hover { background-color: #0056b3; }
+        .redirect-note { margin-top: 25px; color: #999; font-size: 13px; }
+    </style>
+    {% if auto_redirect %}
+    <meta http-equiv="refresh" content="3;url={{ redirect_url }}">
+    {% endif %}
+</head>
+<body>
+    <div class="container">
+        <div class="icon {{ 'success-icon' if category == 'success' else 'error-icon' }}">
+            {{ '✔' if category == 'success' else '✕' }}
+        </div> 
+        <h1>{{ title }}</h1>
+        <p>{{ message }}</p>
+        <a href="{{ redirect_url }}" class="btn">{{ btn_text }}</a>
+        {% if auto_redirect %}
+        <div class="redirect-note">Redirecting you automatically in 3 seconds...</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/about.css">
+    <link rel="stylesheet" href="/static/grid.css">
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+</head>
+<body>    
+    <div class="header">
+        <div class="container">
+            <div class="rows">
+                <div class="col-3">
+                    <div class="logo">
+                        <img src="/static/images/images.png" alt="">
+                        <span>Skyflights</span>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="menu">
+                        <ul>
+                            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                            <li><a href="search.html"><i class="fa fa-search"></i> Search</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li><a href="/my_bookings"><i class="fa fa-list"></i> My Bookings</a></li>
+                            {% endif %}
+                            
+                            <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact us</a></li>
+                            <li><a href="about.html"><i class="fa fa-info-circle"></i> About us</a></li>
+                            
+                            {% if session.get('logged_in') %}
+                                <li class="user-profile">
+                                    <a href="#"><i class="fa-solid fa-user"></i><i class="fa fa-user-circle"></i> {{ session['username'] }}</a>
+                                    <div class="profile-dropdown">
+                                        <p><strong>Email:</strong> {{ session['email'] }}</p>
+                                        <hr>
+                                        <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+                                    </div>
+                                </li>
+                            {% else %}
+                                <li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hheader">
+        <div class="container">
+            <h1>SkyFlights!!!Easy and Comfortable</h1>
+            <div class="photo"></div>
+        </div>
+    </div>
+
+    <div class="about">
+        <div class="container">
+            <h2>About us</h2><br>
+            <p>
+                SkyFlights is India’s largest and most preferred passenger airline and amongst the fastest-growing airlines in the world.
+                We have a simple philosophy: offer fares that are affordable, flights that are on time, and provide a courteous and hassle-free travel experience across our unparalleled network. We demonstrate that low cost does not mean low quality. With our fleet of 400+ aircraft, we operate well over 2,300 daily flights, connecting 130+ destinations (of which 40+ are international), welcoming 118 million+ customers on board last year. We have an industry-leading on-time performance and one of the highest customer NPS in the Indian market. At SkyFlights, we will continue to extend our scope, by spreading our wings internationally, from a domestic carrier to a global aviation leader.
+            </p>
+            <br>
+            <h2>Our people and our values</h2><br>
+            <p>
+                We understand that a highly engaged and motivated workforce leads to higher levels of customer service. Our core strength lies in our remarkably skilled, driven, and dedicated employees, who enable us to deliver courteous and hassle-free service to the 350,000+ customers who fly with us each day. The teamwork displayed by our employees is tangible across our stations and departments. We are proud to have ifly, one of the largest aviation training academies in the world, where the SkyFlights spirit is created for over 2,000 people a day.
+                Over the years a strong SkyFlights culture has been built and nurtured. This is centred around our five core values - Always safe, Passionately consistent, Service from the heart, Humility with pride, and Power of We - which our staff exhibit in their daily work. With our Made in IndiGo program, we give room to our home-grown 6E employees to flourish.
+            </p>
+            <br>
+            <h2>Recognitions</h2> 
+            <p>
+                As India’s most preferred airline, we have been recognised by several reputed organisations from around the world:<br>
+                1. We were awarded the “2024 - Airline of the Year” by CAPA – Centre for Aviation.<br>
+                2. We were awarded the “World’s Youngest Aircraft Fleet” in the 100+ aircraft category by ch-aviation.<br>
+                3. We were awarded “Best Low-Cost Airline in India & South Asia” by Skytrax in 2024, for the 14th time in a row.
+            </p>
+        </div>
+    </div>
+    
+    <div class="face"> 
+        <div class="container">
+            <h1>Our facilities</h1><br><br>
+            <div class="face-1">
+                <div class="rows">
+                    <div class="col-3">
+                        <div class="f1">
+                            <i class="fa fa-ticket"></i>
+                            <h3>Easy Booking</h3><br>
+                            <p>Book your tickets in just a few clicks</p><br>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="f1">
+                            <i class="fa fa-lock"></i>
+                            <h3>Secure payments</h3><br>
+                            <p>100% safe and encrypted transactions</p><br>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="f1">
+                            <i class="fa fa-phone"></i>
+                            <h3>24/7 Support</h3><br>
+                            <p>Support available anytime, anywhere</p><br>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="f1">
+                            <i class="fa fa-info-circle"></i>
+                            <h3>Live Flight Updates</h3><br>
+                            <p>Stay informed with real time flight status</p><br>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="footer">
+        <div class="container">
+            <div class="inner-footer">
+                <div class="rows">
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>About us</h2><br>
+                            <p>skyflight is most trusted flight booking agency, offering affordable fares and hassle-free travel services.</p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Quick Links</h2><br>
+                            <div class="menuf">
+                                <ul>
+                                    <li><a href="/">Home</a></li>
+                                    <li><a href="book.html">Book Now</a></li>
+                                    <li><a href="search.html">Search</a></li>
+                                    <li><a href="contact.html">Contact us</a></li>
+                                    <li><a href="about.html">About us</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Services</h2><br>
+                            <ul class="serv">
+                                <li>24/7 Customer Support</li>
+                                <li>Easy Online Booking</li>
+                                <li>Secure Payment Options</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="A1">
+                            <h2>Contact us</h2>
+                            <div class="detail">
+                                <ul class="data"><br>
+                                    <li><i class="fa fa-map-marker"></i> GANDHINAGAR</li>
+                                    <li><i class="fa fa-phone"></i> 9870088118</li>
+                                    <li><i class="fa fa-envelope"></i> janral2204@gmail.com</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-border"></div>
+            
+            <div class="footer-end">
+                <div class="left-end">
+                    <p>Copyright 2026 - All rights reserved by <span>skyflight</span></p>
+                </div>
+                <div class="right-end">
+                    <div class="social-icons">
+                        <a href="#" class="facebook"></a>
+                        <a href="#" class="twitter"></a>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <h2>Find Us Here</h2>
+            <div class="footer-map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.5652194823347!2d72.63099969999999!3d23.0763962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e814e9704ec85%3A0x90dd00e5a99ba47a!2sSardar%20Vallabhbhai%20Patel%20International%20Airport!5e0!3m2!1sen!2sin!4v1776366096335!5m2!1sen!2sin" width="100%" height="340px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>    
+       
+</body>
+</html>

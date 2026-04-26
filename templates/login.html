@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/login.css">
+  <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.css">
+  <link rel="stylesheet" href="/static/grid.css">
+</head>
+<body>
+          
+   <div class="header">
+        <div class="container">
+            <div class="rows">
+            <div class="col-3">
+                <div class="logo">
+                    <img src="/static/images/images.png" alt="">
+                    <span>Skyflights</span>
+
+            </div>
+            </div>
+           
+            <div class="col-9">
+                <div class="menu">
+                    <ul>
+    <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+    <li><a href="search.html"><i class="fa fa-search"></i> Search</a></li>
+    
+    {% if session.get('logged_in') %}
+        <li><a href="/my_bookings"><i class="fa fa-list"></i> My Bookings</a></li>
+    {% endif %}
+    
+    <li><a href="contact.html"><i class="fa fa-envelope"></i> Contact us</a></li>
+    <li><a href="about.html"><i class="fa fa-info-circle"></i> About us</a></li>
+    
+    {% if session.get('logged_in') %}
+        <li class="user-profile">
+            <a href="#"><i class="fa fa-user-circle"></i> {{ session['username'] }}</a>
+            <div class="profile-dropdown">
+                <p><strong>Email:</strong> {{ session['email'] }}</p>
+                <hr>
+                <a href="/logout" class="logout-btn"><i class="fa fa-sign-out"></i> Logout</a>
+            </div>
+        </li>
+    {% else %}
+        <li><a href="login.html"><i class="fa fa-user"></i> Login</a></li>
+    {% endif %}
+</ul>
+                </div>
+            </div>
+             </div>
+        </div>
+      </div>
+       
+  <div class="form-background">
+    <h2 class="form-title">Log in</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages" style="margin-bottom: 15px;">
+      {% for category, message in messages %}
+        <div style="padding: 10px; border-radius: 5px; text-align: center; 
+             {% if category == 'error' %} background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; 
+             {% elif category == 'success' %} background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; {% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+    <form action="/login" method="POST" class="login-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <label for="name">User name</label>
+        <input type="text" id="name" name="User_name" required>
+
+        <label for="from">password</label>
+        <input type="password" id="from" name="password" required>
+
+        <button type="submit">Log in</button>
+      
+        <div style="text-align: center; margin-top: 10px; margin-bottom: 10px;">
+            <a href="/forgot_password" style="color: #007bff; text-decoration: none;">Forgot Password?</a>
+        </div>
+        <button type="button" class="cancelbtn">Cancel</button>
+        <label for="Registration">If you are new user <a href="registration.html">Registration</a> </label>
+    
+    </form>
+  </div>
+
+<div class="footer">
+      <div class="container">
+          <div class="inner-footer">
+              <div class="rows">
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>About us</h2><br>
+                          <p>skyflight is most trusted flight booking agency, offering affordable fares and hassle-free travel services.</p>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Quick Links</h2><br>
+                          <div class="menuf">
+                              <ul>
+                                  <li><a href="/">Home</a></li>
+                                  <li><a href="book.html">Book Now</a></li>
+                                  <li><a href="search.html">Search</a></li>
+                                  <li><a href="contact.html">Contact us</a></li>
+                                  <li><a href="about.html">About us</a></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Services</h2><br>
+                          <ul class="serv">
+                              <li>24/7 Customer Support</li>
+                              <li>Easy Online Booking</li>
+                              <li>Secure Payment Options</li>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="col-3">
+                      <div class="A1">
+                          <h2>Contact us</h2>
+                          <div class="detail">
+                              <ul class="data"><br>
+                                  <li><i class="fa fa-map-marker"></i> GANDHINAGAR</li>
+                                  <li><i class="fa fa-phone"></i> 9870088118</li>
+                                  <li><i class="fa fa-envelope"></i> janral2204@gmail.com</li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="footer-border"></div>
+          <div class="footer-end">
+              <div class="left-end">
+                  <p>Copyright 2026 - All rights reserved by <span>skyflight</span></p>
+              </div>
+              <div class="right-end">
+                  <div class="social-icons">
+                      <a href="#" class="facebook"></a>
+                      <a href="#" class="twitter"></a>
+                  </div>
+              </div>
+          </div>
+
+          <br>
+          <h2>Find Us Here</h2>
+          <div class="footer-map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.5652194823347!2d72.63099969999999!3d23.0763962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e814e9704ec85%3A0x90dd00e5a99ba47a!2sSardar%20Vallabhbhai%20Patel%20International%20Airport!5e0!3m2!1sen!2sin!4v1776366096335!5m2!1sen!2sin" width="100%" height="340px" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+      </div>
+   </div>
+</body>
+</html>
