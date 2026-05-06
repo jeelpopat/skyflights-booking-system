@@ -216,6 +216,9 @@ def search_flights():
     
     if return_date:
         params["return_date"] = return_date
+        params["type"] = "1"  
+    else:
+        params["type"] = "2"  
 
     try:
         response = requests.get("https://serpapi.com/search.json", params=params)
@@ -226,7 +229,7 @@ def search_flights():
             flash(f"API Connection Issue: {data['error']}", "error")
             return redirect(url_for('search_page'))
         
-            raw_flights = data.get('best_flights', []) + data.get('other_flights', [])
+        raw_flights = data.get('best_flights', []) + data.get('other_flights', [])
         
         if not raw_flights:
             flash(f"No flights found between {origin_code} and {destination_code} on this date. Ensure it is a valid route (e.g., try DEL to BOM).", "error")
