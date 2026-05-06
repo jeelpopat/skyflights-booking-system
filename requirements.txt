@@ -8,3 +8,4 @@ qrcode[pil]
 reportlab
 itsdangerous
 Werkzeug
+gunicorn
