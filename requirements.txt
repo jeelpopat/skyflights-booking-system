@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+Flask-Mail
+Flask-WTF
+WTF-CSRF
+requests
+qrcode[pil]
+reportlab
+itsdangerous
+Werkzeug
