@@ -1,0 +1,146 @@
+.main-content { 
+    max-width: 1200px; 
+    margin: 60px auto; 
+    display: flex; 
+    gap: 30px; 
+    padding: 0 20px; 
+}
+
+.sidebar-filters { 
+    width: 300px; 
+    background: var(--white); 
+    padding: 30px; 
+    border-radius: var(--radius-md); 
+    box-shadow: var(--shadow-soft); 
+    position: sticky;
+    top: 100px;
+    
+    max-height: calc(100vh - 120px); 
+    overflow-y: auto;
+}
+
+.sidebar-filters::-webkit-scrollbar { width: 6px; }
+.sidebar-filters::-webkit-scrollbar-track { background: transparent; }
+.sidebar-filters::-webkit-scrollbar-thumb { background: #D0D5DB; border-radius: 10px; }
+.sidebar-filters::-webkit-scrollbar-thumb:hover { background: var(--primary-blue); }
+
+.sidebar-filters h3 { 
+    margin-top: 0; 
+    color: var(--deep-navy); 
+    border-bottom: 2px solid var(--light-sky); 
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+    font-size: 18px;
+}
+
+.filter-group { margin-bottom: 25px; }
+.filter-group h4 { margin: 0 0 15px 0; color: var(--deep-navy); font-size: 15px; }
+
+.filter-group label { 
+    display: flex; 
+    align-items: center;
+    color: var(--text-muted); 
+    margin-bottom: 10px; 
+    font-size: 14px; 
+    cursor: pointer; 
+    transition: var(--transition);
+}
+
+.filter-group label:hover { color: var(--primary-blue); }
+.filter-group input[type="checkbox"] { margin-right: 10px; accent-color: var(--primary-blue); }
+
+.results-container { flex: 1; }
+
+.results-header { 
+    color: var(--deep-navy); 
+    margin-bottom: 30px; 
+    padding-bottom: 20px;
+    border-bottom: 2px solid #E0E5EC;
+}
+
+.results-header h2 { margin: 0; font-size: 28px; }
+.results-header p { margin: 10px 0 0 0; font-size: 16px; color: var(--text-muted); }
+
+.top-controls { 
+    display: flex; 
+    justify-content: flex-end; 
+    margin-bottom: 20px; 
+}
+
+.currency-select {
+    padding: 10px 15px; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    border: 1px solid #E0E5EC; 
+    outline: none;
+    background: var(--white);
+    color: var(--text-dark);
+}
+
+.flight-card { 
+    background: var(--white); 
+    border-radius: var(--radius-md); 
+    padding: 30px; 
+    margin-bottom: 20px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    box-shadow: var(--shadow-soft); 
+    border-left: 6px solid var(--primary-blue); 
+    transition: var(--transition); 
+}
+
+.flight-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+
+.flight-info { width: 25%; }
+.flight-info h3 { margin: 0 0 8px 0; color: var(--deep-navy); font-size: 18px; }
+.flight-info p { margin: 4px 0; color: var(--text-muted); font-size: 13px; }
+
+.route-details { text-align: center; flex: 1; padding: 0 20px; }
+.time-row { font-weight: 700; font-size: 22px; color: var(--text-dark); margin-bottom: 8px; }
+.duration-row { color: var(--primary-blue); font-size: 14px; margin-bottom: 12px; font-weight: 500; }
+
+.stops-route { 
+    font-size: 13px; 
+    color: var(--text-muted); 
+    background: #F8F9FA; 
+    padding: 8px 15px; 
+    border-radius: 20px; 
+    display: inline-block; 
+}
+
+.price-section { text-align: right; width: 25%; border-left: 1px solid #E0E5EC; padding-left: 20px; }
+.price-tag { font-size: 28px; color: var(--deep-navy); font-weight: 700; display: block; margin-bottom: 15px; }
+
+.book-btn { 
+    display: block; 
+    background-color: var(--primary-blue); 
+    color: var(--white); 
+    padding: 12px 20px; 
+    text-decoration: none; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    text-align: center; 
+    transition: var(--transition);
+}
+
+.book-btn:hover { background-color: var(--deep-navy); }
+
+.no-results { 
+    background: var(--white); 
+    padding: 60px 40px; 
+    text-align: center; 
+    border-radius: var(--radius-md); 
+    box-shadow: var(--shadow-soft);
+}
+
+.no-results h3 { color: var(--deep-navy); font-size: 24px; margin-bottom: 10px; }
+.no-results p { color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
+
+@media (max-width: 992px) {
+    .main-content { flex-direction: column; }
+    .sidebar-filters { width: 100%; position: static; }
+    .flight-card { flex-direction: column; text-align: center; gap: 20px; }
+    .flight-info, .price-section { width: 100%; text-align: center; border-left: none; padding-left: 0; }
+    .price-section { border-top: 1px solid #E0E5EC; padding-top: 20px; }
+}

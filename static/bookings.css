@@ -1,0 +1,98 @@
+.bookings-wrapper {
+    padding: 60px 20px;
+    min-height: 70vh;
+}
+
+.bookings-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 40px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.bookings-container h2 {
+    color: var(--deep-navy);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.booking-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0;
+    margin-top: 20px; 
+}
+
+.booking-table th, 
+.booking-table td { 
+    padding: 18px 15px; 
+    text-align: left; 
+    border-bottom: 1px solid #E0E5EC; 
+}
+
+.booking-table th { 
+    background-color: #F8F9FA; 
+    color: var(--text-muted); 
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.booking-table th:first-child { border-top-left-radius: 8px; }
+.booking-table th:last-child { border-top-right-radius: 8px; }
+
+.booking-table tr { transition: var(--transition); }
+.booking-table tbody tr:hover { background-color: #F8F9FA; }
+
+.status-badge { 
+    background: #E8F5E9; 
+    color: #2E7D32; 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 13px; 
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-pending { 
+    background: #FFF8E1; 
+    color: #F57F17; 
+    padding: 6px 12px; 
+    border-radius: 20px; 
+    font-size: 13px; 
+    font-weight: 600;
+    display: inline-block;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-download { background: #E6F0FF; color: var(--primary-blue); }
+.btn-download:hover { background: var(--primary-blue); color: var(--white); }
+
+.btn-pay { background: var(--primary-blue); color: var(--white); }
+.btn-pay:hover { background: var(--deep-navy); }
+
+.btn-cancel { background: #FFF0F0; color: #DC3545; }
+.btn-cancel:hover { background: #DC3545; color: var(--white); }
+
+@media (max-width: 768px) {
+    .bookings-container { padding: 20px; }
+    .booking-table { display: block; overflow-x: auto; white-space: nowrap; }
+}
