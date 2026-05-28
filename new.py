@@ -190,6 +190,10 @@ def book_page():
                            trip_type=trip_type,
                            return_date=return_date)
 
+@app.route('/googlee03a99ad3dea8528.html')
+def google(): 
+    return render_template('googlee03a99ad3dea8528.html')
+
 @app.route('/search.html')
 def search_page(): 
     return render_template('search.html')
